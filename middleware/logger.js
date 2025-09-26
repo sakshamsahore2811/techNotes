@@ -1,6 +1,6 @@
-const { format } = require('date-fns')
+import { format } from 'date-fns'
+import { v4 as uuid } from 'uuid'
 const fs = require('fs')
-const { v4:uuid } = require('uuid')
 const fsPromises = require('fs').promises
 const path = require('path')
 
