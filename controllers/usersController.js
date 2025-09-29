@@ -45,22 +45,22 @@ const createNewUser = asyncHandler(async(req,res)=>{
 // Updates existing user
 // Doesn't allow username update if it already exists
 const updateUser = asyncHandler(async(req,res)=>{
-    const {id, username, password, active, roles} = req.body
+    const {_id, username, password, active, roles} = req.body
 
-    if(!id || !username || !password || typeof(active)!=Boolean || !Array.isArray(roles)){
+    if(!_id || !username){
         return res.status(400).json({message:"All fields are required"})
     }
 
-    const user = await User.findById(id)
+    const user = await User.findById(_id)
     if(!user){
-        return res.json({message:"Could not find the user"})
+        return res.status(404).json({message:"Could not find the user"})
     }
 
     const duplicate = await User.findOne({username}).lean().exec()
     if(duplicate && duplicate?._id.toString() != id){
         return res.status(409).json({message:"Username already exists"})
     }
-    user.name = username
+    user.username = username
     user.active = active
     user.roles = roles
  
@@ -69,7 +69,7 @@ const updateUser = asyncHandler(async(req,res)=>{
     if(password){
         user.password = await bcrypt.hash(password,10)
     }
-    const updatedUser = user.save()
+    const updatedUser = await user.save()
     if(updatedUser){
     res.json({message:`User ${username} updated successfully`})
     }
@@ -78,15 +78,13 @@ const updateUser = asyncHandler(async(req,res)=>{
 // @delete request
 // deletes user from the app
 const deleteUser = asyncHandler(async(req,res)=>{
-    const {id} = req.body
-    const user = await User.findById(id).lean().exec()
+    const {_id} = req.body
+    const user = await User.findById(_id).exec()
     if(!user){
         return res.status(400).json({message:"User not found"})
     }
-    const result = user.deleteOne()
-    if(result){
-    res.status(200).json({message:`${username} deleted successfully`})
-    }
+    const result = await user.deleteOne()
+    res.status(200).json({message:`${user.username} deleted successfully`})
 })
 
 module.exports = {
