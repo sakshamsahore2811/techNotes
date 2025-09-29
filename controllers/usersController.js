@@ -7,11 +7,11 @@ const bcrypt = require('bcrypt')
 // gets a list of all the users
 // private access (later)
 const getAllUsers = asyncHandler(async(req,res) =>{
-    const users = User.find().select('-password').lean()
-    if (!user){
-        res.status(400).json({message:"No user found"})
+    const users = await User.find().select('-password').lean().exec()
+    if (!users || users.length===0){
+        return res.status(400).json({message:"No user found"})
     }
-    res.json(users)
+    res.status(200).json(users)
 })
 
 // @post route
@@ -21,16 +21,16 @@ const createNewUser = asyncHandler(async(req,res)=>{
     const {username,password,roles} = req.body
 
     if (!username || !password || !Array.isArray(roles) || !roles.length){
-        res.status(400).json({message:"Please input all required fields"})
+        return res.status(400).json({message:"Please input all required fields"})
     }
 
-    const duplicate = User.findOne({username}).lean().exec()
+    const duplicate = await User.findOne({username}).lean().exec()
     if(duplicate){
-    res.status(409).json({message:"Username already exists"})        
+    return res.status(409).json({message:"Username already exists"})        
     }
 
     const hashedPwd = await bcrypt.hash(password,10)
-    const user = User.create({username,"password":hashedPwd,roles})
+    const user = await User.create({username,"password":hashedPwd,roles})
     
     if(user){
         res.status(200).json({message:`User ${username} successfully created`})
@@ -48,12 +48,12 @@ const updateUser = asyncHandler(async(req,res)=>{
     const {id, username, password, active, roles} = req.body
 
     if(!id || !username || !password || typeof(active)!=Boolean || !Array.isArray(roles)){
-        res.status(400).json({message:"All fields are required"})
+        return res.status(400).json({message:"All fields are required"})
     }
 
     const user = await User.findById(id)
     if(!user){
-        res.json({message:"Could not find the user"})
+        return res.json({message:"Could not find the user"})
     }
 
     const duplicate = await User.findOne({username}).lean().exec()
@@ -70,8 +70,9 @@ const updateUser = asyncHandler(async(req,res)=>{
         user.password = await bcrypt.hash(password,10)
     }
     const updatedUser = user.save()
+    if(updatedUser){
     res.json({message:`User ${username} updated successfully`})
-
+    }
 })
 
 // @delete request
@@ -83,7 +84,9 @@ const deleteUser = asyncHandler(async(req,res)=>{
         return res.status(400).json({message:"User not found"})
     }
     const result = user.deleteOne()
+    if(result){
     res.status(200).json({message:`${username} deleted successfully`})
+    }
 })
 
 module.exports = {

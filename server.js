@@ -37,7 +37,7 @@ app.use((req, res) => {
   })
 
 mongoose.connection.once('open',()=>{
-console.log("Connect to Mongo DB")
+console.log("Connected to Mongo DB")
   app.listen(PORT, ()=>console.log(`Server running on PORT ${PORT}`))
 })
   
