@@ -4,10 +4,12 @@ TechNotes provides end-to-end ticket management system with user authentication,
 
 # 🚀 Features
 
-- User authentication
-- Built-in logger
-- Admin can get, delete, create and update user(s)
-- Interactive UI
+- User authentication and authorisation
+- Each note is assigned to a user
+- Users and notes can be amended, created, deleted and accessed (CRUD)
+- Built-in logger that logs all requests internally and in console
+- Access given based on roles of employees
+- Sleek and Fully functional, user-first UI
 - Notes can be assigned, reassigned and completed
 
 # 📷 Screenshots
