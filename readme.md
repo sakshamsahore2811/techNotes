@@ -10,7 +10,7 @@ TechNotes provides end-to-end ticket management system with user authentication,
 - Interactive UI
 - Notes can be assigned, reassigned and completed
 
-📷 Screenshots
+# 📷 Screenshots
 
 ![](./public/SCR-20250929-kegi.png)
 ![](./public/SCR-20250929-keig.png)

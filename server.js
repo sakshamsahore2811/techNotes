@@ -23,6 +23,8 @@ app.use("/",require("./routes/root"))
 
 app.use("/user",require("./routes/userRoutes"))
 
+app.use("/note",require("./routes/noteRoutes"))
+
 // use views/404 for any undefined get request
 app.use((req, res) => {
     res.status(404)
